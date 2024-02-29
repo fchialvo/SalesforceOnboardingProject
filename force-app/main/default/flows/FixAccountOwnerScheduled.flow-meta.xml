@@ -64,6 +64,8 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Territory__c</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
@@ -133,6 +135,21 @@
         <connector>
             <targetReference>Get_Related_Sales_Reps</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>BillingPostalCode</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>BillingPostalCode</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
         <object>Account</object>
         <schedule>
             <frequency>Daily</frequency>
