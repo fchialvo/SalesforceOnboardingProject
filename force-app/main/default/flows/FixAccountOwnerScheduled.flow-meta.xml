@@ -2,25 +2,25 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
     <decisions>
-        <name>HasTheRightOwner</name>
-        <label>HasTheRightOwner</label>
+        <name>Are_there_related_sales_reps</name>
+        <label>Are there related sales reps</label>
         <locationX>182</locationX>
         <locationY>360</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>MustFixOwner</name>
+            <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.OwnerId</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>Get_Related_Sales_Reps</leftValueReference>
+                <operator>IsNull</operator>
                 <rightValue>
-                    <elementReference>Get_Related_Sales_Reps.OwnerId</elementReference>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Update_Account_Owner</targetReference>
+                <targetReference>Get_Sales_Reps</targetReference>
             </connector>
-            <label>MustFixOwner</label>
+            <label>No</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -52,7 +52,37 @@
         <locationY>252</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>HasTheRightOwner</targetReference>
+            <targetReference>Are_there_related_sales_reps</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.BillingPostalCode</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>OwnerId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Territory__c</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Sales_Reps</name>
+        <label>Get Sales Reps</label>
+        <locationX>50</locationX>
+        <locationY>468</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_Account_Owner</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -72,14 +102,14 @@
         <name>Update_Account_Owner</name>
         <label>Update Account Owner</label>
         <locationX>50</locationX>
-        <locationY>468</locationY>
+        <locationY>576</locationY>
         <connector>
             <targetReference>Update_Contacts_Owner</targetReference>
         </connector>
         <inputAssignments>
             <field>OwnerId</field>
             <value>
-                <elementReference>Get_Related_Sales_Reps.OwnerId</elementReference>
+                <elementReference>Get_Sales_Reps.OwnerId</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
@@ -88,7 +118,7 @@
         <name>Update_Contacts_Owner</name>
         <label>Update Contacts Owner</label>
         <locationX>50</locationX>
-        <locationY>576</locationY>
+        <locationY>684</locationY>
         <connector>
             <targetReference>Update_Opportunity_Owner</targetReference>
         </connector>
@@ -103,7 +133,7 @@
         <inputAssignments>
             <field>OwnerId</field>
             <value>
-                <elementReference>$Record.OwnerId</elementReference>
+                <elementReference>Get_Sales_Reps.OwnerId</elementReference>
             </value>
         </inputAssignments>
         <object>Contact</object>
@@ -112,7 +142,7 @@
         <name>Update_Opportunity_Owner</name>
         <label>Update Opportunity Owner</label>
         <locationX>50</locationX>
-        <locationY>684</locationY>
+        <locationY>792</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>AccountId</field>
@@ -124,7 +154,7 @@
         <inputAssignments>
             <field>OwnerId</field>
             <value>
-                <elementReference>Get_Related_Sales_Reps.OwnerId</elementReference>
+                <elementReference>Get_Sales_Reps.OwnerId</elementReference>
             </value>
         </inputAssignments>
         <object>Opportunity</object>
